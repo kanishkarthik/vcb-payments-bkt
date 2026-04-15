@@ -6,7 +6,7 @@ const {
 module.exports = withModuleFederationPlugin({
   name: 'bkt',
   exposes: {
-    './payments': './src/app/app.ts',
+    './bkt': './src/app/app.ts',
   },
 
   shared: {
