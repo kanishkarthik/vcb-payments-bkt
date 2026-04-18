@@ -1,0 +1,114 @@
+<div class="payment-step2-bkt-container">
+  <div class="step-content">
+    <h2>Step 2: Bank Transfer Details</h2>
+    
+    <form [formGroup]="form" (ngSubmit)="onNext()">
+      <!-- Beneficiary Bank Selection -->
+      <div class="form-group">
+        <label for="bank">{{ 'payments.bkt.beneficiaryBank' | translate }}</label>
+        <select 
+          id="bank" 
+          formControlName="beneficiaryBankCode" 
+          class="form-control"
+          (change)="onBankSelected($any($event.target).value)">
+          <option value="">Select a bank...</option>
+          @for (bank of banks; track bank.code) {
+            <option [value]="bank.code">
+              {{ bank.name }} ({{ bank.code }})
+            </option>
+          }
+        </select>
+        @if (form.get('beneficiaryBankCode')?.invalid && form.get('beneficiaryBankCode')?.touched) {
+          <div class="error-message">
+            Bank is required
+          </div>
+        }
+      </div>
+
+      <!-- Beneficiary Account Number -->
+      <div class="form-group">
+        <label for="account">{{ 'payments.bkt.beneficiaryAccount' | translate }}</label>
+        <div class="input-group">
+          <input 
+            id="account" 
+            type="text" 
+            formControlName="beneficiaryAccountNumber" 
+            class="form-control"
+            placeholder="Enter beneficiary account number"
+            (blur)="lookupBeneficiary()">
+          <button type="button" class="lookup-btn" (click)="lookupBeneficiary()" [disabled]="isLoading">
+            @if (!isLoading) {
+              <span>Lookup</span>
+            }
+            @if (isLoading) {
+              <span>Searching...</span>
+            }
+          </button>
+        </div>
+        @if (form.get('beneficiaryAccountNumber')?.invalid && form.get('beneficiaryAccountNumber')?.touched) {
+          <div class="error-message">
+            Account number is required
+          </div>
+        }
+      </div>
+
+      <!-- Beneficiary Name -->
+      <div class="form-group">
+        <label for="name">{{ 'payments.bkt.beneficiaryName' | translate }}</label>
+        <input 
+          id="name" 
+          type="text" 
+          formControlName="beneficiaryName" 
+          class="form-control"
+          placeholder="Enter beneficiary name">
+        @if (form.get('beneficiaryName')?.invalid && form.get('beneficiaryName')?.touched) {
+          <div class="error-message">
+            Beneficiary name is required
+          </div>
+        }
+      </div>
+
+      <!-- Transfer Amount -->
+      <div class="form-group">
+        <label for="amount">{{ 'payments.common.amount' | translate }}</label>
+        <input 
+          id="amount" 
+          type="number" 
+          formControlName="amount" 
+          class="form-control"
+          placeholder="0.00"
+          step="0.01"
+          min="0">
+        @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+          <div class="error-message">
+            Valid amount is required
+          </div>
+        }
+      </div>
+
+      <!-- Narration -->
+      <div class="form-group">
+        <label for="narration">{{ 'payments.common.narrative' | translate }}</label>
+        <textarea 
+          id="narration" 
+          formControlName="narration" 
+          class="form-control"
+          rows="3"
+          placeholder="Enter payment description (optional)"></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-group">
+        <button type="button" class="btn btn-secondary" (click)="onBack()">
+          ← {{ 'common.back' | translate }}
+        </button>
+        <button type="button" class="btn btn-danger" (click)="onCancel()">
+          {{ 'common.cancel' | translate }}
+        </button>        
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || isLoading">
+          {{ 'common.next' | translate }} →
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
